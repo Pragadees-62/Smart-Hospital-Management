@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: #1d4ed8;
+    --color-primary-light: #3b82f6;
+    --color-secondary: #0ea5e9;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  .dark body {
+    @apply bg-gray-950 text-gray-100;
+  }
+}
+
+@layer components {
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+  .glass-dark {
+    @apply bg-gray-900/80 backdrop-blur-md border border-gray-700/30 shadow-lg;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #0ea5e9 100%);
+  }
+  .gradient-card {
+    background: linear-gradient(135deg, rgba(29,78,216,0.08) 0%, rgba(59,130,246,0.05) 100%);
+  }
+
+  /* Sidebar */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 font-medium;
+  }
+  .sidebar-link.active {
+    @apply bg-blue-600 text-white shadow-md shadow-blue-200;
+  }
+
+  /* Cards */
+  .stat-card {
+    @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-95;
+  }
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-2.5 rounded-xl transition-all duration-200;
+  }
+  .btn-danger {
+    @apply bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-200;
+  }
+  .btn-success {
+    @apply bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-200;
+  }
+
+  /* Form inputs */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400 text-gray-900;
+  }
+  .input-label {
+    @apply block text-sm font-semibold text-gray-700 mb-1.5;
+  }
+
+  /* Status badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .badge-pending { @apply bg-yellow-100 text-yellow-800; }
+  .badge-confirmed { @apply bg-blue-100 text-blue-800; }
+  .badge-completed { @apply bg-green-100 text-green-800; }
+  .badge-cancelled { @apply bg-red-100 text-red-800; }
+  .badge-in_progress { @apply bg-purple-100 text-purple-800; }
+  .badge-emergency { @apply bg-red-100 text-red-700 animate-pulse; }
+
+  /* Table */
+  .table-container {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden;
+  }
+  .table-header {
+    @apply bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3;
+  }
+  .table-cell {
+    @apply px-6 py-4 text-sm text-gray-700;
+  }
+  .table-row {
+    @apply border-b border-gray-50 hover:bg-blue-50/30 transition-colors;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply bg-gray-200 animate-pulse rounded-lg;
+  }
+
+  /* Scrollbar */
+  .custom-scroll::-webkit-scrollbar { width: 4px; }
+  .custom-scroll::-webkit-scrollbar-track { @apply bg-transparent; }
+  .custom-scroll::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-fadeInUp { animation: fadeInUp 0.4s ease-out; }
+.animate-slideInLeft { animation: slideInLeft 0.3s ease-out; }
