@@ -300,27 +300,8 @@ const LoginPage = () => {
         pointerEvents:'none', zIndex:0,
       }}/>
 
-      {/* ── Top title ── */}
-      <motion.div
-        initial={{ opacity:0, y:-20 }} animate={{ opacity:1, y:0 }}
-        transition={{ duration:0.7, ease:[0.22,1,0.36,1] }}
-        style={{ textAlign:'center', paddingTop:48, paddingBottom:8, position:'relative', zIndex:2 }}
-      >
-        <p style={{ fontSize:'0.72rem', letterSpacing:'0.3em', color:'rgba(245,166,35,0.55)', fontWeight:600, textTransform:'uppercase', marginBottom:8 }}>
-          Smart Hospital Management
-        </p>
-        <h1 style={{
-          fontFamily:"'Playfair Display', Georgia, serif",
-          fontStyle:'italic', fontWeight:800,
-          fontSize:'clamp(2.4rem, 5vw, 3.8rem)',
-          letterSpacing:'-0.01em', lineHeight:1,
-          background:'linear-gradient(135deg, #f5c842 0%, #f5a623 40%, #fff8e1 70%, #f5a623 100%)',
-          WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
-        }}>
-          Login Lamp
-        </h1>
-        <div style={{ width:60, height:2, background:'linear-gradient(90deg,transparent,#f5a623,transparent)', margin:'12px auto 0' }}/>
-      </motion.div>
+      {/* ── Top spacing (title removed) ── */}
+      <div style={{ paddingTop: 32, position:'relative', zIndex:2 }} />
 
       {/* ── Main 3-column layout ── */}
       <div style={{
