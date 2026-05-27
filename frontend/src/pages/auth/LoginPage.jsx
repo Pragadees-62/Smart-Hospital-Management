@@ -56,164 +56,305 @@ const DustCanvas = ({ lampOn }) => {
   return <canvas ref={ref} style={{ position:'fixed', inset:0, pointerEvents:'none', zIndex:0 }} />;
 };
 
-/* ─── Interactive Lamp SVG ───────────────────────────────────── */
+/* ─── Interactive Lamp SVG — Premium Arc Floor Lamp ─────────── */
 const LampSVG = ({ lampOn, onToggle }) => {
   const [cordPull, setCordPull] = useState(false);
 
   const handleCordClick = () => {
     setCordPull(true);
-    setTimeout(() => setCordPull(false), 400);
+    setTimeout(() => setCordPull(false), 350);
     onToggle();
   };
 
   return (
     <svg
-      viewBox="0 0 260 440"
+      viewBox="0 0 300 500"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ width:'100%', maxWidth:260, cursor:'default',
+      style={{
+        width:'100%', maxWidth:300, cursor:'default',
         filter: lampOn
-          ? 'drop-shadow(0 0 60px rgba(245,166,35,0.5)) drop-shadow(0 0 120px rgba(245,166,35,0.25))'
-          : 'drop-shadow(0 0 8px rgba(245,166,35,0.08))',
-        transition:'filter 0.8s ease',
+          ? 'drop-shadow(0 0 50px rgba(245,166,35,0.55)) drop-shadow(0 0 100px rgba(245,166,35,0.28))'
+          : 'drop-shadow(0 0 6px rgba(245,166,35,0.06))',
+        transition:'filter 0.9s ease',
       }}
     >
       <defs>
-        {/* Shade gradient — always visible */}
-        <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"  stopColor="#f5c842" stopOpacity={lampOn ? '0.95' : '0.35'}/>
-          <stop offset="60%" stopColor="#c8860a" stopOpacity={lampOn ? '0.9'  : '0.3' }/>
-          <stop offset="100%" stopColor="#7a4e00" stopOpacity={lampOn ? '0.85' : '0.25'}/>
+        {/* ── Metallic pole gradient ── */}
+        <linearGradient id="pole" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#1a1408"/>
+          <stop offset="30%"  stopColor="#4a3820"/>
+          <stop offset="55%"  stopColor="#c8a050"/>
+          <stop offset="75%"  stopColor="#8a6530"/>
+          <stop offset="100%" stopColor="#1a1408"/>
         </linearGradient>
-
-        {/* Bulb glow — only when ON */}
+        {/* ── Base gradient ── */}
+        <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor="#5a4020"/>
+          <stop offset="40%"  stopColor="#3a2810"/>
+          <stop offset="100%" stopColor="#1a1008"/>
+        </linearGradient>
+        {/* ── Base sheen ── */}
+        <linearGradient id="baseSheen" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#c8a050" stopOpacity="0"/>
+          <stop offset="40%"  stopColor="#ffd700" stopOpacity="0.35"/>
+          <stop offset="100%" stopColor="#c8a050" stopOpacity="0"/>
+        </linearGradient>
+        {/* ── Shade outer ── */}
+        <linearGradient id="shadeOuter" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#1a1008" stopOpacity={lampOn?'0.9':'0.6'}/>
+          <stop offset="20%"  stopColor="#7a5020" stopOpacity={lampOn?'0.95':'0.5'}/>
+          <stop offset="50%"  stopColor="#c8860a" stopOpacity={lampOn?'1':'0.45'}/>
+          <stop offset="80%"  stopColor="#7a5020" stopOpacity={lampOn?'0.95':'0.5'}/>
+          <stop offset="100%" stopColor="#1a1008" stopOpacity={lampOn?'0.9':'0.6'}/>
+        </linearGradient>
+        {/* ── Shade inner glow ── */}
+        <radialGradient id="shadeInner" cx="50%" cy="80%" r="60%">
+          <stop offset="0%"   stopColor="#fff9c4" stopOpacity={lampOn?'0.55':'0'}/>
+          <stop offset="60%"  stopColor="#f5a623" stopOpacity={lampOn?'0.2':'0'}/>
+          <stop offset="100%" stopColor="#f5a623" stopOpacity="0"/>
+        </radialGradient>
+        {/* ── Shade top cap ── */}
+        <linearGradient id="shadeCap" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor="#c8a050"/>
+          <stop offset="100%" stopColor="#7a5020"/>
+        </linearGradient>
+        {/* ── Bulb glow ── */}
         <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="#fff9c4" stopOpacity={lampOn ? '1'   : '0'}/>
-          <stop offset="40%"  stopColor="#ffd54f" stopOpacity={lampOn ? '0.9' : '0'}/>
+          <stop offset="0%"   stopColor="#fffde7" stopOpacity={lampOn?'1':'0'}/>
+          <stop offset="35%"  stopColor="#ffd54f" stopOpacity={lampOn?'0.9':'0'}/>
           <stop offset="100%" stopColor="#f5a623" stopOpacity="0"/>
         </radialGradient>
-
-        {/* Floor glow */}
-        <radialGradient id="floorGlow" cx="50%" cy="20%" r="50%">
-          <stop offset="0%"   stopColor="#f5a623" stopOpacity={lampOn ? '0.45' : '0'}/>
+        {/* ── Wide floor glow ── */}
+        <radialGradient id="floorGlow" cx="50%" cy="30%" r="50%">
+          <stop offset="0%"   stopColor="#f5a623" stopOpacity={lampOn?'0.5':'0'}/>
+          <stop offset="60%"  stopColor="#f5a623" stopOpacity={lampOn?'0.15':'0'}/>
           <stop offset="100%" stopColor="#f5a623" stopOpacity="0"/>
         </radialGradient>
-
-        {/* Light cone */}
+        {/* ── Cone light ── */}
         <linearGradient id="coneLight" x1="0.5" y1="0" x2="0.5" y2="1">
-          <stop offset="0%"   stopColor="#ffd54f" stopOpacity={lampOn ? '0.22' : '0'}/>
+          <stop offset="0%"   stopColor="#ffd54f" stopOpacity={lampOn?'0.28':'0'}/>
+          <stop offset="70%"  stopColor="#f5a623" stopOpacity={lampOn?'0.06':'0'}/>
           <stop offset="100%" stopColor="#f5a623" stopOpacity="0"/>
         </linearGradient>
-
-        <filter id="blur4"><feGaussianBlur stdDeviation="4"/></filter>
-        <filter id="blur8"><feGaussianBlur stdDeviation="8"/></filter>
+        {/* ── Decorative ring gradient ── */}
+        <linearGradient id="ring" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#3a2810"/>
+          <stop offset="50%"  stopColor="#ffd700"/>
+          <stop offset="100%" stopColor="#3a2810"/>
+        </linearGradient>
+        {/* ── Neck joint ── */}
+        <linearGradient id="joint" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#2a1e0a"/>
+          <stop offset="50%"  stopColor="#c8a050"/>
+          <stop offset="100%" stopColor="#2a1e0a"/>
+        </linearGradient>
+        {/* ── Filters ── */}
+        <filter id="blur3"><feGaussianBlur stdDeviation="3"/></filter>
+        <filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter>
+        <filter id="blur12"><feGaussianBlur stdDeviation="12"/></filter>
+        <filter id="blur20"><feGaussianBlur stdDeviation="20"/></filter>
+        {/* ── Shade shadow ── */}
+        <filter id="shadeShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#000" floodOpacity="0.5"/>
+        </filter>
       </defs>
 
-      {/* ── Floor ambient pool ── */}
-      <ellipse cx="130" cy="415" rx="110" ry="22"
-        fill="url(#floorGlow)" filter="url(#blur8)"
-        style={{ transition:'opacity 0.8s' }}
-        opacity={lampOn ? 1 : 0}
-      />
+      {/* ══ FLOOR GLOW POOL ══ */}
+      <ellipse cx="150" cy="478" rx="130" ry="26"
+        fill="url(#floorGlow)" filter="url(#blur12)"
+        opacity={lampOn ? 1 : 0} style={{ transition:'opacity 0.9s' }}/>
+      <ellipse cx="150" cy="480" rx="80" ry="14"
+        fill="#f5a623" opacity={lampOn ? 0.18 : 0} filter="url(#blur6)"
+        style={{ transition:'opacity 0.9s' }}/>
 
-      {/* ── Light cone ── */}
-      <polygon points="80,148 180,148 230,415 30,415"
+      {/* ══ LIGHT CONE ══ */}
+      <polygon points="100,178 200,178 265,478 35,478"
         fill="url(#coneLight)"
-        style={{ transition:'opacity 0.8s' }}
-        opacity={lampOn ? 0.7 : 0}
-      />
+        opacity={lampOn ? 1 : 0} style={{ transition:'opacity 0.9s' }}/>
+      {/* Cone edge rays */}
+      {lampOn && <>
+        <line x1="100" y1="178" x2="35"  y2="478" stroke="#ffd54f" strokeWidth="0.5" strokeOpacity="0.12"/>
+        <line x1="200" y1="178" x2="265" y2="478" stroke="#ffd54f" strokeWidth="0.5" strokeOpacity="0.12"/>
+        <line x1="150" y1="178" x2="150" y2="478" stroke="#ffd54f" strokeWidth="0.5" strokeOpacity="0.08"/>
+      </>}
 
-      {/* ── Stand base ── */}
-      <ellipse cx="130" cy="407" rx="52" ry="10" fill="#1a1208" opacity="0.9"/>
-      <rect x="108" y="385" width="44" height="24" rx="8" fill="#2a1e0a"/>
+      {/* ══ BASE PLATFORM ══ */}
+      {/* Base shadow */}
+      <ellipse cx="150" cy="472" rx="62" ry="10" fill="#000" opacity="0.5" filter="url(#blur6)"/>
+      {/* Base body — stepped design */}
+      <rect x="108" y="455" width="84" height="18" rx="9" fill="url(#base)"/>
+      <rect x="116" y="448" width="68" height="12" rx="6" fill="url(#base)"/>
+      <rect x="124" y="443" width="52" height="10" rx="5" fill="url(#base)"/>
+      {/* Base sheen */}
+      <rect x="108" y="455" width="84" height="6" rx="3" fill="url(#baseSheen)" opacity="0.6"/>
+      {/* Base decorative line */}
+      <rect x="112" y="460" width="76" height="1.5" rx="1" fill="#ffd700" opacity="0.3"/>
 
-      {/* ── Stem ── */}
-      <rect x="126" y="160" width="8" height="230" rx="4" fill="#3d2b0e"/>
-      <path d="M130 160 Q130 130 118 118" stroke="#3d2b0e" strokeWidth="8" strokeLinecap="round" fill="none"/>
+      {/* ══ VERTICAL POLE ══ */}
+      {/* Pole shadow */}
+      <rect x="148" y="200" width="10" height="248" rx="5" fill="#000" opacity="0.4" filter="url(#blur3)"/>
+      {/* Main pole */}
+      <rect x="144" y="200" width="12" height="248" rx="6" fill="url(#pole)"/>
+      {/* Pole highlight stripe */}
+      <rect x="148" y="200" width="3" height="248" rx="1.5" fill="#ffd700" opacity="0.18"/>
+      {/* Pole decorative rings */}
+      {[260, 320, 380].map(y => (
+        <g key={y}>
+          <rect x="140" y={y} width="20" height="7" rx="3.5" fill="url(#ring)"/>
+          <rect x="142" y={y+1} width="16" height="2" rx="1" fill="#ffd700" opacity="0.4"/>
+        </g>
+      ))}
 
-      {/* ── Shade body ── */}
-      <path d="M72 148 Q80 80 130 72 Q180 80 188 148 Z" fill="url(#shade)"
-        style={{ transition:'opacity 0.6s' }}/>
-      <ellipse cx="130" cy="72"  rx="28" ry="7"  fill="#c8860a" opacity={lampOn ? 0.9 : 0.4}
-        style={{ transition:'opacity 0.6s' }}/>
-      <ellipse cx="130" cy="148" rx="58" ry="10" fill="#7a4e00" opacity={lampOn ? 0.8 : 0.35}
-        style={{ transition:'opacity 0.6s' }}/>
+      {/* ══ ARC NECK ══ */}
+      {/* Neck shadow */}
+      <path d="M150 200 Q148 170 132 155 Q118 142 110 130"
+        stroke="#000" strokeWidth="16" strokeLinecap="round" fill="none" opacity="0.3" filter="url(#blur3)"/>
+      {/* Neck tube */}
+      <path d="M150 200 Q148 170 132 155 Q118 142 110 130"
+        stroke="url(#pole)" strokeWidth="12" strokeLinecap="round" fill="none"/>
+      {/* Neck highlight */}
+      <path d="M150 200 Q148 170 132 155 Q118 142 110 130"
+        stroke="#ffd700" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.2"/>
+      {/* Neck joint ball */}
+      <circle cx="150" cy="200" r="10" fill="url(#joint)"/>
+      <circle cx="150" cy="200" r="10" stroke="#ffd700" strokeWidth="1" strokeOpacity="0.4" fill="none"/>
+      <circle cx="150" cy="200" r="5"  fill="#c8a050"/>
+      <circle cx="148" cy="198" r="2"  fill="#ffd700" opacity="0.6"/>
+
+      {/* ══ SHADE ASSEMBLY ══ */}
+      {/* Wide outer glow when ON */}
       {lampOn && (
-        <>
-          <path d="M95 148 Q100 100 130 88 Q160 100 165 148" fill="#ffd54f" opacity="0.12"/>
-          <path d="M72 148 Q76 110 100 88" stroke="#ffd54f" strokeWidth="1.5" strokeOpacity="0.3" fill="none"/>
-        </>
+        <ellipse cx="150" cy="155" rx="90" ry="40"
+          fill="#f5a623" opacity="0.12" filter="url(#blur12)"/>
       )}
 
-      {/* ── Bulb ── */}
-      <circle cx="130" cy="130" r="32"
-        fill="url(#bulbGlow)" filter="url(#blur4)"
-        opacity={lampOn ? 0.9 : 0}
-        style={{ transition:'opacity 0.6s' }}
-      />
-      <circle cx="130" cy="130" r="14"
-        fill={lampOn ? '#fff9c4' : '#2a2010'}
-        opacity={lampOn ? 0.95 : 0.6}
-        style={{ transition:'fill 0.6s, opacity 0.6s' }}
-      />
-      <circle cx="130" cy="130" r="8"
-        fill={lampOn ? '#ffffff' : '#1a1408'}
-        style={{ transition:'fill 0.6s' }}
-      />
-      {lampOn && <circle cx="124" cy="124" r="3" fill="#ffffff" opacity="0.7"/>}
-
-      {/* ── Animated pulse (only when ON) ── */}
+      {/* Shade body — modern tapered hexagonal look */}
+      <path d="M68 178 L82 95 Q90 72 150 68 Q210 72 218 95 L232 178 Z"
+        fill="url(#shadeOuter)" filter="url(#shadeShadow)"
+        style={{ transition:'opacity 0.7s' }}/>
+      {/* Shade inner glow surface */}
+      <path d="M72 178 L85 97 Q93 76 150 72 Q207 76 215 97 L228 178 Z"
+        fill="url(#shadeInner)" style={{ transition:'opacity 0.7s' }}/>
+      {/* Shade outer edge lines (ribs) */}
+      {lampOn && [0.25, 0.5, 0.75].map((t, i) => {
+        const x1 = 68 + t * (232 - 68);
+        const x2 = 82 + t * (218 - 82);
+        return (
+          <line key={i}
+            x1={x1} y1={178} x2={x2} y2={95}
+            stroke="#ffd54f" strokeWidth="0.6" strokeOpacity="0.12"/>
+        );
+      })}
+      {/* Shade bottom rim */}
+      <ellipse cx="150" cy="178" rx="82" ry="12"
+        fill="#7a5020" opacity={lampOn ? 0.9 : 0.5}
+        style={{ transition:'opacity 0.7s' }}/>
+      <ellipse cx="150" cy="178" rx="82" ry="12"
+        stroke="#c8a050" strokeWidth="1.5" fill="none" opacity={lampOn ? 0.6 : 0.2}
+        style={{ transition:'opacity 0.7s' }}/>
+      {/* Shade bottom inner rim glow */}
       {lampOn && (
-        <circle cx="130" cy="130" r="50" fill="#ffd54f" opacity="0" filter="url(#blur8)">
-          <animate attributeName="opacity" values="0;0.18;0" dur="2.8s" repeatCount="indefinite"/>
-          <animate attributeName="r"       values="50;65;50"  dur="2.8s" repeatCount="indefinite"/>
+        <ellipse cx="150" cy="178" rx="70" ry="8"
+          fill="#ffd54f" opacity="0.15" filter="url(#blur3)"/>
+      )}
+      {/* Shade top cap */}
+      <ellipse cx="150" cy="68" rx="32" ry="9" fill="url(#shadeCap)"/>
+      <ellipse cx="150" cy="68" rx="32" ry="9" stroke="#ffd700" strokeWidth="1" fill="none" opacity="0.5"/>
+      <ellipse cx="150" cy="66" rx="20" ry="5" fill="#ffd700" opacity="0.2"/>
+      {/* Shade top opening hole */}
+      <ellipse cx="150" cy="68" rx="14" ry="4" fill="#0c0a06" opacity="0.8"/>
+      {/* Top glow escape */}
+      {lampOn && (
+        <ellipse cx="150" cy="65" rx="14" ry="4"
+          fill="#fff9c4" opacity="0.35" filter="url(#blur3)"/>
+      )}
+
+      {/* ══ BULB ══ */}
+      {/* Wide halo */}
+      <circle cx="150" cy="148" r="55"
+        fill="url(#bulbGlow)" filter="url(#blur12)"
+        opacity={lampOn ? 0.8 : 0} style={{ transition:'opacity 0.7s' }}/>
+      {/* Medium glow */}
+      <circle cx="150" cy="148" r="30"
+        fill="#ffd54f" opacity={lampOn ? 0.25 : 0} filter="url(#blur6)"
+        style={{ transition:'opacity 0.7s' }}/>
+      {/* Bulb glass */}
+      <circle cx="150" cy="148" r="16"
+        fill={lampOn ? '#fff9c4' : '#1e1810'}
+        opacity={lampOn ? 0.95 : 0.7}
+        style={{ transition:'fill 0.7s, opacity 0.7s' }}/>
+      {/* Bulb filament glow */}
+      <circle cx="150" cy="148" r="9"
+        fill={lampOn ? '#ffffff' : '#2a2010'}
+        style={{ transition:'fill 0.7s' }}/>
+      {/* Filament detail */}
+      {lampOn && <>
+        <path d="M146 148 Q150 143 154 148 Q150 153 146 148"
+          stroke="#fff9c4" strokeWidth="1.5" fill="none" opacity="0.8"/>
+        <circle cx="146" cy="143" r="2.5" fill="#ffffff" opacity="0.7"/>
+      </>}
+      {/* Pulse ring */}
+      {lampOn && (
+        <circle cx="150" cy="148" r="55" fill="#ffd54f" opacity="0" filter="url(#blur6)">
+          <animate attributeName="opacity" values="0;0.2;0"  dur="2.6s" repeatCount="indefinite"/>
+          <animate attributeName="r"       values="55;75;55" dur="2.6s" repeatCount="indefinite"/>
         </circle>
       )}
 
-      {/* ── Hanging cord ── */}
+      {/* ══ PULL CORD ══ */}
+      {/* Cord from shade */}
       <path
         d={cordPull
-          ? 'M158 72 Q165 90 162 108 Q159 120 163 148'
-          : 'M158 72 Q165 90 162 108 Q159 120 163 132'}
-        stroke="#5a3e1a" strokeWidth="2.5" strokeLinecap="round" fill="none"
-        style={{ transition:'d 0.2s' }}
+          ? 'M218 95 Q228 110 224 130 Q221 148 226 168'
+          : 'M218 95 Q228 110 224 130 Q221 148 226 155'}
+        stroke="#5a3e1a" strokeWidth="2" strokeLinecap="round" fill="none"
+        style={{ transition:'all 0.25s' }}
       />
 
-      {/* ── Pull switch (clickable) ── */}
-      <g
-        onClick={handleCordClick}
-        style={{ cursor:'pointer' }}
-        transform={cordPull ? 'translate(0, 16)' : 'translate(0, 0)'}
-      >
-        {/* Glow ring when ON */}
+      {/* ══ PULL SWITCH (clickable) ══ */}
+      <g onClick={handleCordClick} style={{ cursor:'pointer' }}
+        transform={cordPull ? 'translate(0,14)' : 'translate(0,0)'}>
+        {/* Outer glow */}
         {lampOn && (
-          <circle cx="163" cy="136" r="10" fill="#f5a623" opacity="0.2" filter="url(#blur4)"/>
+          <circle cx="226" cy="160" r="14" fill="#f5a623" opacity="0.2" filter="url(#blur6)"/>
         )}
-        {/* Switch body */}
-        <circle cx="163" cy="136" r="7"
-          fill={lampOn ? '#f5a623' : '#3d2b0e'}
-          stroke={lampOn ? '#ffd700' : '#5a3e1a'}
+        {/* Switch housing */}
+        <rect x="216" y="152" width="20" height="28" rx="10"
+          fill={lampOn ? '#3a2810' : '#1e1408'}
+          stroke={lampOn ? '#c8a050' : '#3a2810'}
           strokeWidth="1.5"
-          style={{ transition:'fill 0.4s, stroke 0.4s' }}
-        />
-        {/* Switch inner dot */}
-        <circle cx="163" cy="136" r="3.5"
-          fill={lampOn ? '#fff9c4' : '#2a1e0a'}
-          style={{ transition:'fill 0.4s' }}
-        />
-        {/* Cord below switch */}
-        <line x1="163" y1="143" x2="163" y2="155" stroke="#5a3e1a" strokeWidth="1.5"/>
-        <circle cx="163" cy="157" r="3" fill="#3d2b0e"/>
+          style={{ transition:'fill 0.5s, stroke 0.5s' }}/>
+        {/* Switch button */}
+        <rect x="220" y={lampOn ? '156' : '164'} width="12" height="12" rx="6"
+          fill={lampOn ? '#f5a623' : '#2a1e0a'}
+          style={{ transition:'all 0.4s' }}/>
+        {lampOn && (
+          <rect x="222" y="158" width="8" height="4" rx="2" fill="#fff9c4" opacity="0.7"/>
+        )}
+        {/* I / O symbol */}
+        <text x="226" y={lampOn ? '172' : '164'}
+          fontSize="7" fontWeight="900" fontFamily="Inter,sans-serif"
+          textAnchor="middle"
+          fill={lampOn ? '#ffd700' : 'rgba(245,166,35,0.3)'}
+          style={{ transition:'fill 0.4s', userSelect:'none' }}>
+          {lampOn ? 'I' : 'O'}
+        </text>
+        {/* Cord below */}
+        <line x1="226" y1="180" x2="226" y2="194" stroke="#5a3e1a" strokeWidth="2"/>
+        <circle cx="226" cy="197" r="4" fill="#3a2810" stroke="#c8a050" strokeWidth="1"/>
 
-        {/* ON/OFF label */}
-        <text
-          x="178" y="140"
-          fontSize="9"
-          fontWeight="700"
-          fontFamily="Inter, sans-serif"
-          fill={lampOn ? '#f5a623' : 'rgba(245,166,35,0.35)'}
-          style={{ transition:'fill 0.4s', userSelect:'none' }}
-        >
+        {/* ON/OFF badge */}
+        <rect x="234" y="153" width="28" height="14" rx="7"
+          fill={lampOn ? 'rgba(245,166,35,0.2)' : 'rgba(255,255,255,0.04)'}
+          stroke={lampOn ? 'rgba(245,166,35,0.4)' : 'rgba(255,255,255,0.08)'}
+          strokeWidth="1"
+          style={{ transition:'all 0.4s' }}/>
+        <text x="248" y="163"
+          fontSize="7.5" fontWeight="800" fontFamily="Inter,sans-serif"
+          textAnchor="middle"
+          fill={lampOn ? '#f5a623' : 'rgba(245,166,35,0.3)'}
+          style={{ transition:'fill 0.4s', userSelect:'none' }}>
           {lampOn ? 'ON' : 'OFF'}
         </text>
       </g>
