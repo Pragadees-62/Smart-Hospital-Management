@@ -1,109 +1,88 @@
-/**
- * Dashboard Header — Premium Redesign v2.0
- */
-
+/** Dashboard Header — Login Lamp Theme */
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMenu, FiBell, FiMoon, FiSun, FiLogOut, FiUser, FiChevronDown, FiSearch } from 'react-icons/fi';
+import { FiMenu, FiBell, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { getInitials } from '../../utils/helpers';
 
 const DashboardHeader = ({ onMenuClick, title }) => {
   const { user, logout } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const handler = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setShowDropdown(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    const h = (e) => { if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setShowDropdown(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
   }, []);
 
   const handleLogout = () => { logout(); navigate('/login'); };
-
-  const getProfilePath = () => {
-    if (user?.role === 'doctor') return '/doctor/profile';
-    if (user?.role === 'admin')  return '/admin/dashboard';
-    return '/patient/profile';
-  };
-
-  const roleColors = {
-    admin:   { bg: 'linear-gradient(135deg, #7c3aed, #a78bfa)', ring: 'rgba(139,92,246,0.3)' },
-    doctor:  { bg: 'linear-gradient(135deg, #00d4b8, #0ea5e9)', ring: 'rgba(0,212,184,0.3)'  },
-    patient: { bg: 'linear-gradient(135deg, #059669, #34d399)', ring: 'rgba(52,211,153,0.3)' },
-  };
-  const rc = roleColors[user?.role] || roleColors.patient;
+  const getProfilePath = () => user?.role === 'doctor' ? '/doctor/profile' : user?.role === 'admin' ? '/admin/dashboard' : '/patient/profile';
 
   return (
-    <header className="bg-white/95 backdrop-blur-xl border-b border-gray-100 px-4 lg:px-6 py-3.5 flex items-center justify-between sticky top-0 z-30"
-      style={{ boxShadow: '0 1px 20px rgba(0,0,0,0.06)' }}>
-      <div className="flex items-center gap-4">
-        <button onClick={onMenuClick}
-          className="lg:hidden p-2.5 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors">
-          <FiMenu size={20} />
+    <header style={{
+      background: 'rgba(12,10,6,0.92)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(245,166,35,0.1)',
+      padding: '12px 24px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      position: 'sticky', top: 0, zIndex: 30,
+      boxShadow: '0 1px 20px rgba(0,0,0,0.4)',
+    }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+        <button onClick={onMenuClick} className="lg:hidden"
+          style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(245,240,232,0.5)', padding:6, borderRadius:10 }}>
+          <FiMenu size={20}/>
         </button>
-        <div>
-          <h1 className="text-lg font-black text-gray-900 hidden sm:block tracking-tight">{title}</h1>
-        </div>
+        <h1 style={{ fontSize:'1.05rem', fontWeight:800, color:'#f5f0e8', letterSpacing:'-0.02em' }} className="hidden sm:block">{title}</h1>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* Theme toggle */}
-        <button onClick={toggleTheme}
-          className="p-2.5 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors">
-          {isDark ? <FiSun size={17} /> : <FiMoon size={17} />}
-        </button>
-
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
         {/* Notifications */}
         <button onClick={() => navigate(user?.role === 'patient' ? '/patient/notifications' : '#')}
-          className="relative p-2.5 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors">
-          <FiBell size={17} />
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full border-2 border-white"
-            style={{ background: '#ff6b6b' }} />
+          style={{ position:'relative', background:'rgba(245,166,35,0.06)', border:'1px solid rgba(245,166,35,0.1)', borderRadius:12, padding:9, cursor:'pointer', color:'rgba(245,240,232,0.5)', display:'flex', transition:'all 0.2s' }}
+          onMouseEnter={e => { e.currentTarget.style.background='rgba(245,166,35,0.12)'; e.currentTarget.style.color='#f5a623'; }}
+          onMouseLeave={e => { e.currentTarget.style.background='rgba(245,166,35,0.06)'; e.currentTarget.style.color='rgba(245,240,232,0.5)'; }}>
+          <FiBell size={17}/>
+          <span style={{ position:'absolute', top:7, right:7, width:7, height:7, borderRadius:'50%', background:'#f5a623', border:'2px solid #0c0a06', boxShadow:'0 0 6px rgba(245,166,35,0.6)' }}/>
         </button>
 
         {/* User dropdown */}
-        <div className="relative" ref={dropdownRef}>
+        <div style={{ position:'relative' }} ref={dropdownRef}>
           <button onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center gap-2.5 pl-2 pr-3 py-2 rounded-2xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-              style={{ background: rc.bg, boxShadow: `0 0 0 3px ${rc.ring}` }}>
-              {user?.avatar_url
-                ? <img src={user.avatar_url} alt="" className="w-full h-full rounded-xl object-cover" />
-                : getInitials(user?.full_name)
-              }
+            style={{ display:'flex', alignItems:'center', gap:10, padding:'6px 12px 6px 6px', borderRadius:14, background:'rgba(245,166,35,0.06)', border:'1px solid rgba(245,166,35,0.1)', cursor:'pointer', transition:'all 0.2s' }}
+            onMouseEnter={e => { e.currentTarget.style.background='rgba(245,166,35,0.1)'; e.currentTarget.style.borderColor='rgba(245,166,35,0.2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background='rgba(245,166,35,0.06)'; e.currentTarget.style.borderColor='rgba(245,166,35,0.1)'; }}>
+            <div style={{ width:32, height:32, borderRadius:10, background:'linear-gradient(135deg,#b8860b,#f5a623)', display:'flex', alignItems:'center', justifyContent:'center', color:'#0c0a06', fontSize:'0.75rem', fontWeight:800, flexShrink:0, boxShadow:'0 0 10px rgba(245,166,35,0.3)' }}>
+              {user?.avatar_url ? <img src={user.avatar_url} alt="" style={{ width:'100%', height:'100%', borderRadius:10, objectFit:'cover' }}/> : getInitials(user?.full_name)}
             </div>
-            <span className="hidden sm:block text-sm font-bold text-gray-800 max-w-[120px] truncate">
-              {user?.full_name}
-            </span>
-            <FiChevronDown size={13} className={`text-gray-400 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
+            <span className="hidden sm:block" style={{ fontSize:'0.85rem', fontWeight:700, color:'#f5f0e8', maxWidth:120, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user?.full_name}</span>
+            <FiChevronDown size={13} style={{ color:'rgba(245,240,232,0.4)', transform: showDropdown ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}/>
           </button>
 
           <AnimatePresence>
             {showDropdown && (
-              <motion.div initial={{ opacity: 0, y: 8, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.95 }} transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
-                style={{ boxShadow: '0 20px 50px rgba(0,0,0,0.12)' }}>
-                <div className="p-4 border-b border-gray-50" style={{ background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)' }}>
-                  <p className="font-bold text-gray-900 text-sm">{user?.full_name}</p>
-                  <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
+              <motion.div initial={{ opacity:0, y:8, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:8, scale:0.95 }} transition={{ duration:0.15 }}
+                style={{ position:'absolute', right:0, top:'calc(100% + 8px)', width:220, background:'rgba(20,16,8,0.95)', backdropFilter:'blur(20px)', borderRadius:16, border:'1px solid rgba(245,166,35,0.15)', overflow:'hidden', zIndex:50, boxShadow:'0 20px 50px rgba(0,0,0,0.6)' }}>
+                <div style={{ padding:'14px 16px', borderBottom:'1px solid rgba(245,166,35,0.08)', background:'rgba(245,166,35,0.04)' }}>
+                  <p style={{ fontWeight:700, color:'#f5f0e8', fontSize:'0.875rem' }}>{user?.full_name}</p>
+                  <p style={{ fontSize:'0.72rem', color:'rgba(245,240,232,0.4)', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user?.email}</p>
                 </div>
-                <div className="p-2">
-                  <button onClick={() => { navigate(getProfilePath()); setShowDropdown(false); }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors font-medium">
-                    <FiUser size={15} className="text-gray-400" /> Profile
-                  </button>
-                  <button onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium">
-                    <FiLogOut size={15} /> Logout
-                  </button>
+                <div style={{ padding:6 }}>
+                  {[
+                    { icon:FiUser, label:'Profile', action:() => { navigate(getProfilePath()); setShowDropdown(false); }, color:'rgba(245,240,232,0.7)' },
+                    { icon:FiLogOut, label:'Logout', action:handleLogout, color:'rgba(220,38,38,0.7)' },
+                  ].map(({ icon:Icon, label, action, color }) => (
+                    <button key={label} onClick={action}
+                      style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'10px 12px', borderRadius:10, background:'none', border:'none', cursor:'pointer', color, fontWeight:600, fontSize:'0.85rem', fontFamily:'Inter,sans-serif', transition:'all 0.15s' }}
+                      onMouseEnter={e => { e.currentTarget.style.background='rgba(245,166,35,0.06)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background='none'; }}>
+                      <Icon size={15}/> {label}
+                    </button>
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -113,5 +92,4 @@ const DashboardHeader = ({ onMenuClick, title }) => {
     </header>
   );
 };
-
 export default DashboardHeader;

@@ -1,54 +1,39 @@
-/**
- * Stat Card — Premium Redesign v2.0
- */
-
+/** StatCard — Login Lamp Theme */
 import { motion } from 'framer-motion';
 
 const colorMap = {
-  blue:   { grad: 'linear-gradient(135deg, #0f2040, #1e3a8a)', light: 'rgba(30,58,138,0.08)',  text: '#1e3a8a',  glow: 'rgba(30,58,138,0.2)'  },
-  green:  { grad: 'linear-gradient(135deg, #059669, #34d399)', light: 'rgba(5,150,105,0.08)',  text: '#059669',  glow: 'rgba(5,150,105,0.2)'  },
-  purple: { grad: 'linear-gradient(135deg, #7c3aed, #a78bfa)', light: 'rgba(124,58,237,0.08)', text: '#7c3aed',  glow: 'rgba(124,58,237,0.2)' },
-  orange: { grad: 'linear-gradient(135deg, #d97706, #fbbf24)', light: 'rgba(217,119,6,0.08)',  text: '#d97706',  glow: 'rgba(217,119,6,0.2)'  },
-  red:    { grad: 'linear-gradient(135deg, #dc2626, #ff6b6b)', light: 'rgba(220,38,38,0.08)',  text: '#dc2626',  glow: 'rgba(220,38,38,0.2)'  },
-  cyan:   { grad: 'linear-gradient(135deg, #00d4b8, #0ea5e9)', light: 'rgba(0,212,184,0.08)',  text: '#0891b2',  glow: 'rgba(0,212,184,0.2)'  },
-  teal:   { grad: 'linear-gradient(135deg, #00d4b8, #0ea5e9)', light: 'rgba(0,212,184,0.08)',  text: '#0891b2',  glow: 'rgba(0,212,184,0.2)'  },
+  blue:   { grad:'linear-gradient(135deg,#b8860b,#f5a623)', glow:'rgba(245,166,35,0.25)', light:'rgba(245,166,35,0.08)' },
+  green:  { grad:'linear-gradient(135deg,#14532d,#16a34a)', glow:'rgba(22,163,74,0.2)',   light:'rgba(22,163,74,0.08)'  },
+  purple: { grad:'linear-gradient(135deg,#b8860b,#ffd700)', glow:'rgba(245,166,35,0.2)',  light:'rgba(245,166,35,0.06)' },
+  orange: { grad:'linear-gradient(135deg,#f5a623,#ffd54f)', glow:'rgba(245,166,35,0.25)', light:'rgba(245,166,35,0.08)' },
+  red:    { grad:'linear-gradient(135deg,#7f1d1d,#dc2626)', glow:'rgba(220,38,38,0.2)',   light:'rgba(220,38,38,0.08)'  },
+  cyan:   { grad:'linear-gradient(135deg,#b8860b,#f5c842)', glow:'rgba(245,166,35,0.2)',  light:'rgba(245,166,35,0.06)' },
+  teal:   { grad:'linear-gradient(135deg,#b8860b,#f5a623)', glow:'rgba(245,166,35,0.25)', light:'rgba(245,166,35,0.08)' },
 };
 
-const StatCard = ({ title, value, icon: Icon, color = 'blue', trend, subtitle }) => {
+const StatCard = ({ title, value, icon:Icon, color='blue', trend, subtitle }) => {
   const c = colorMap[color] || colorMap.blue;
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3, boxShadow: `0 12px 40px ${c.glow}` }}
-      className="stat-card relative overflow-hidden cursor-default"
-      style={{ transition: 'all 0.25s ease' }}
-    >
-      {/* Background orb */}
-      <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-60"
-        style={{ background: c.light }} />
-
-      <div className="relative flex items-start justify-between">
-        <div className="flex-1 min-w-0">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{title}</p>
-          <p className="text-3xl font-black text-gray-900 tracking-tight">{value}</p>
-          {subtitle && <p className="text-xs text-gray-400 mt-1.5 font-medium">{subtitle}</p>}
+    <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }}
+      whileHover={{ y:-3, boxShadow:`0 12px 40px ${c.glow}` }}
+      className="stat-card" style={{ transition:'all 0.25s ease' }}>
+      <div style={{ position:'absolute', top:-24, right:-24, width:96, height:96, borderRadius:'50%', background:c.light, pointerEvents:'none' }}/>
+      <div style={{ position:'relative', display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+        <div style={{ flex:1, minWidth:0 }}>
+          <p style={{ fontSize:'0.68rem', fontWeight:700, color:'rgba(245,240,232,0.35)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>{title}</p>
+          <p style={{ fontSize:'1.75rem', fontWeight:900, color:'#f5f0e8', letterSpacing:'-0.03em' }}>{value}</p>
+          {subtitle && <p style={{ fontSize:'0.72rem', color:'rgba(245,240,232,0.35)', marginTop:4, fontWeight:500 }}>{subtitle}</p>}
           {trend !== undefined && (
-            <div className={`inline-flex items-center gap-1 mt-2 text-xs font-bold px-2 py-0.5 rounded-full ${
-              trend >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
-            }`}>
+            <div style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:8, fontSize:'0.72rem', fontWeight:700, padding:'2px 8px', borderRadius:99, background: trend >= 0 ? 'rgba(22,163,74,0.12)' : 'rgba(220,38,38,0.12)', color: trend >= 0 ? '#6ee7b7' : '#fca5a5' }}>
               {trend >= 0 ? '↑' : '↓'} {Math.abs(trend)}% vs last month
             </div>
           )}
         </div>
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg"
-          style={{ background: c.grad }}>
-          <Icon size={20} className="text-white" />
+        <div style={{ width:48, height:48, borderRadius:14, background:c.grad, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, boxShadow:`0 4px 16px ${c.glow}` }}>
+          <Icon size={20} style={{ color:'#0c0a06' }}/>
         </div>
       </div>
     </motion.div>
   );
 };
-
 export default StatCard;

@@ -1,130 +1,120 @@
-/**
- * Public Navbar — Premium Redesign v2.0
- */
-
+/** Public Navbar — Login Lamp Theme */
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiMoon, FiSun, FiArrowRight } from 'react-icons/fi';
+import { FiMenu, FiX, FiArrowRight } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen]     = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isAuthenticated, user } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
   const navigate  = useNavigate();
   const location  = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
   }, []);
 
   const navLinks = [
-    { label: 'Home',     href: '/'        },
-    { label: 'About',    href: '/about'   },
-    { label: 'Services', href: '/services'},
-    { label: 'Contact',  href: '/contact' },
+    { label:'Home',     href:'/'         },
+    { label:'About',    href:'/about'    },
+    { label:'Services', href:'/services' },
+    { label:'Contact',  href:'/contact'  },
   ];
-
-  const getDashboardPath = () => {
-    if (user?.role === 'admin')  return '/admin/dashboard';
-    if (user?.role === 'doctor') return '/doctor/dashboard';
-    return '/patient/dashboard';
-  };
-
+  const getDashboardPath = () => user?.role === 'admin' ? '/admin/dashboard' : user?.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard';
   const isActive = (href) => location.pathname === href;
 
+  const navStyle = {
+    position:'fixed', top:0, left:0, right:0, zIndex:50,
+    transition:'all 0.3s',
+    background: scrolled ? 'rgba(12,10,6,0.95)' : 'transparent',
+    backdropFilter: scrolled ? 'blur(20px)' : 'none',
+    borderBottom: scrolled ? '1px solid rgba(245,166,35,0.1)' : '1px solid transparent',
+    boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.4)' : 'none',
+  };
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled
-        ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/80'
-        : 'bg-transparent'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 py-4">
+    <nav style={navStyle}>
+      <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 24px' }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', height:68 }}>
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, #00d4b8, #0ea5e9)' }}>
-              <span className="text-white font-black text-xl">H</span>
-            </div>
-            <span className={`font-black text-xl tracking-tight transition-colors ${scrolled ? 'text-gray-900' : 'text-white'}`}>
-              Smart<span style={{ color: '#00d4b8' }}>Hospital</span>
+          <Link to="/" style={{ display:'flex', alignItems:'center', gap:12, textDecoration:'none' }}>
+            <div style={{ width:40, height:40, borderRadius:12, background:'linear-gradient(135deg,#b8860b,#f5a623)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:18, color:'#0c0a06', boxShadow:'0 0 16px rgba(245,166,35,0.4)', transition:'transform 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.transform='scale(1.05)'}
+              onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>H</div>
+            <span style={{ fontWeight:800, fontSize:'1.2rem', color:'#f5f0e8', letterSpacing:'-0.02em' }}>
+              Smart<span style={{ color:'#f5a623' }}>Hospital</span>
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
+          {/* Desktop nav */}
+          <div className="hidden md:flex" style={{ alignItems:'center', gap:4 }}>
             {navLinks.map(link => (
-              <Link key={link.href} to={link.href}
-                className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 ${
-                  isActive(link.href)
-                    ? scrolled ? 'bg-gray-100 text-gray-900' : 'bg-white/15 text-white'
-                    : scrolled ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}>
+              <Link key={link.href} to={link.href} style={{
+                padding:'8px 16px', borderRadius:12, fontWeight:600, fontSize:'0.875rem', textDecoration:'none', transition:'all 0.2s',
+                background: isActive(link.href) ? 'rgba(245,166,35,0.1)' : 'transparent',
+                color: isActive(link.href) ? '#f5a623' : 'rgba(245,240,232,0.65)',
+                border: isActive(link.href) ? '1px solid rgba(245,166,35,0.2)' : '1px solid transparent',
+              }}
+              onMouseEnter={e => { if (!isActive(link.href)) { e.currentTarget.style.color='#f5f0e8'; e.currentTarget.style.background='rgba(245,166,35,0.06)'; }}}
+              onMouseLeave={e => { if (!isActive(link.href)) { e.currentTarget.style.color='rgba(245,240,232,0.65)'; e.currentTarget.style.background='transparent'; }}}>
                 {link.label}
               </Link>
             ))}
           </div>
 
           {/* Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            <button onClick={toggleTheme}
-              className={`p-2.5 rounded-xl transition-all ${scrolled ? 'text-gray-500 hover:bg-gray-100' : 'text-white/70 hover:bg-white/10'}`}>
-              {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
-            </button>
+          <div className="hidden md:flex" style={{ alignItems:'center', gap:10 }}>
             {isAuthenticated ? (
-              <button onClick={() => navigate(getDashboardPath())} className="btn-teal text-sm px-5 py-2.5">
-                Dashboard <FiArrowRight size={14} />
+              <button onClick={() => navigate(getDashboardPath())} className="btn-teal" style={{ fontSize:'0.875rem', padding:'9px 20px' }}>
+                Dashboard <FiArrowRight size={14}/>
               </button>
             ) : (
               <>
-                <Link to="/login"
-                  className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                    scrolled ? 'text-gray-700 hover:bg-gray-100 border border-gray-200' : 'text-white border border-white/25 hover:bg-white/10'
-                  }`}>
+                <Link to="/login" style={{ padding:'9px 20px', borderRadius:12, fontWeight:600, fontSize:'0.875rem', textDecoration:'none', color:'rgba(245,240,232,0.7)', border:'1px solid rgba(245,166,35,0.15)', transition:'all 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.color='#f5f0e8'; e.currentTarget.style.borderColor='rgba(245,166,35,0.35)'; e.currentTarget.style.background='rgba(245,166,35,0.06)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color='rgba(245,240,232,0.7)'; e.currentTarget.style.borderColor='rgba(245,166,35,0.15)'; e.currentTarget.style.background='transparent'; }}>
                   Login
                 </Link>
-                <Link to="/register" className="btn-teal text-sm px-5 py-2.5">
-                  Get Started <FiArrowRight size={14} />
+                <Link to="/register" className="btn-teal" style={{ fontSize:'0.875rem', padding:'9px 20px', textDecoration:'none' }}>
+                  Get Started <FiArrowRight size={14}/>
                 </Link>
               </>
             )}
           </div>
 
           {/* Mobile toggle */}
-          <button className={`md:hidden p-2.5 rounded-xl transition-colors ${scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'}`}
-            onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}
+            style={{ background:'rgba(245,166,35,0.08)', border:'1px solid rgba(245,166,35,0.15)', borderRadius:10, padding:8, cursor:'pointer', color:'rgba(245,240,232,0.7)' }}>
+            {isOpen ? <FiX size={20}/> : <FiMenu size={20}/>}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/98 backdrop-blur-xl border-t border-gray-100 px-4 py-5 space-y-1">
+          <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:'auto' }} exit={{ opacity:0, height:0 }}
+            style={{ background:'rgba(12,10,6,0.98)', backdropFilter:'blur(20px)', borderTop:'1px solid rgba(245,166,35,0.08)', padding:'16px', overflow:'hidden' }}
+            className="md:hidden">
             {navLinks.map(link => (
-              <Link key={link.href} to={link.href}
-                className="block px-4 py-3 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                onClick={() => setIsOpen(false)}>
+              <Link key={link.href} to={link.href} onClick={() => setIsOpen(false)}
+                style={{ display:'block', padding:'12px 16px', borderRadius:12, color:'rgba(245,240,232,0.7)', fontWeight:600, textDecoration:'none', marginBottom:4, transition:'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.background='rgba(245,166,35,0.08)'; e.currentTarget.style.color='#f5a623'; }}
+                onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='rgba(245,240,232,0.7)'; }}>
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 flex gap-3">
+            <div style={{ display:'flex', gap:10, marginTop:12 }}>
               {isAuthenticated ? (
-                <button onClick={() => { navigate(getDashboardPath()); setIsOpen(false); }} className="btn-teal flex-1 py-3 text-sm">
-                  Dashboard
-                </button>
+                <button onClick={() => { navigate(getDashboardPath()); setIsOpen(false); }} className="btn-teal" style={{ flex:1, padding:'12px', fontSize:'0.875rem' }}>Dashboard</button>
               ) : (
                 <>
-                  <Link to="/login" className="btn-secondary flex-1 text-center py-3 text-sm" onClick={() => setIsOpen(false)}>Login</Link>
-                  <Link to="/register" className="btn-teal flex-1 text-center py-3 text-sm" onClick={() => setIsOpen(false)}>Register</Link>
+                  <Link to="/login" className="btn-secondary" onClick={() => setIsOpen(false)} style={{ flex:1, textAlign:'center', padding:'12px', fontSize:'0.875rem', textDecoration:'none' }}>Login</Link>
+                  <Link to="/register" className="btn-teal" onClick={() => setIsOpen(false)} style={{ flex:1, textAlign:'center', padding:'12px', fontSize:'0.875rem', textDecoration:'none' }}>Register</Link>
                 </>
               )}
             </div>
@@ -134,5 +124,4 @@ const Navbar = () => {
     </nav>
   );
 };
-
 export default Navbar;
