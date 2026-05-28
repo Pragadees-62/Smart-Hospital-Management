@@ -331,11 +331,8 @@ const LoginPage = () => {
 
   const roleLabel = portal.role.charAt(0).toUpperCase() + portal.role.slice(1);
 
-  /* Page background shifts when lamp is OFF */
-  const pageBg = lampOn
-    ? '#0c0a06'
-    : '#060504';
-
+  /* Page background — truly dark when lamp OFF */
+  const pageBg = lampOn ? '#0c0a06' : '#000000';
   const ambientOpacity = lampOn ? 0.07 : 0;
 
   return (
@@ -385,6 +382,14 @@ const LoginPage = () => {
 
       {/* Dust particles */}
       <DustCanvas lampOn={lampOn} />
+
+      {/* Full dark overlay — fades in when lamp OFF */}
+      <div style={{
+        position:'fixed', inset:0, zIndex:1, pointerEvents:'none',
+        background:'#000000',
+        opacity: lampOn ? 0 : 0.82,
+        transition:'opacity 1s ease',
+      }}/>
 
       {/* Ambient radial glow — fades with lamp */}
       <div style={{
